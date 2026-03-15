@@ -2,6 +2,7 @@
 :ID:       d04359b8-7e2d-475e-ab96-155e11f31647
 :END:
 #+title: travel
+#+FILETAGS: :personal:checklist:
 * Travel List
 ** Backpack
 *** laptop

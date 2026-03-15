@@ -1,0 +1,5 @@
+#+title: Personal Todo
+#+FILETAGS: :personal:
+
+* TODO [/]
+** TODO Example task

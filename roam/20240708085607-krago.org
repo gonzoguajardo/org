@@ -2,6 +2,7 @@
 :ID:       8a7bc3c3-abd6-426d-9358-b8f4497c4583
 :END:
 #+title: krago
+#+FILETAGS: :work:tools:
 * Install locally
 #+begin_src bash
 brew update && brew install --formula zd_krago

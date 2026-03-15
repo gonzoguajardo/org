@@ -1,0 +1,5 @@
+#+title: Work Todo
+#+FILETAGS: :work:
+
+* TODO [/]
+** TODO Example task

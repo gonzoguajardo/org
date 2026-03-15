@@ -2,6 +2,7 @@
 :ID:       1e36f133-d3e2-47eb-9e7f-14f7b997d8e2
 :END:
 #+title: popos
+#+FILETAGS: :personal:reference:
 
 * PopOS                                                            :os:popos:
 ** Fix for popos shop and package manager being whack

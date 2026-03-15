@@ -2,6 +2,7 @@
 :ID:       12dd56e1-352a-4758-a5e6-46c5032c5069
 :END:
 #+title: christmas
+#+FILETAGS: :personal:wishlist:
 
 * Christmas List 2022
 - [[https://www.amazon.com/dp/B09W2N774C?ref=emc_p_m_5_i][737 anker charger]]

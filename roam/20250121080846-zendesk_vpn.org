@@ -2,6 +2,7 @@
 :ID:       17018d31-899e-40a2-b073-35e9708b63b0
 :END:
 #+title: Zendesk VPN
+#+FILETAGS: :work:reference:
 * Resources
 
 VPN address for Zendesk

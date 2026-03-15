@@ -2,6 +2,7 @@
 :ID:       2f97fe69-c6b7-4704-8d69-94f19c1e9ee9
 :END:
 #+title: System User Deprecation
+#+FILETAGS: :work:project:
 * Resources
 
 ** `x-forwarded-client-cert` is the cert we want for istio

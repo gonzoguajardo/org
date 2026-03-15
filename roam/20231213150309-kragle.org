@@ -2,6 +2,7 @@
 :ID:       c3a858c8-864f-453d-9b55-ca807733c82c
 :END:
 #+title: kragle
+#+FILETAGS: :work:reference:
 
 * Example billing kragle call
 #+begin_src

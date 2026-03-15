@@ -2,6 +2,7 @@
 :ID:       ba93aebc-bea0-431d-8da7-cb1feb172dd4
 :END:
 #+title: ruby
+#+FILETAGS: :personal:reference:
 * Ruby
 
 ** Creating a new ruby application with bundler

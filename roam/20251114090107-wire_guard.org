@@ -2,6 +2,7 @@
 :ID:       fd1b067c-78cc-494e-b6e6-8e062fdc4afc
 :END:
 #+title: Wire Guard
+#+FILETAGS: :personal:reference:
 * WireGuard
 ** Adding a Client
 1. Go to unifi console and add a client under the wireguard vpn server. Either download the config or scan with the wireguard mobile app.

@@ -2,6 +2,7 @@
 :ID:       8ddac47c-7487-493f-9fa5-98e1e4571401
 :END:
 #+title: keyboards
+#+FILETAGS: :personal:hardware:
 
 * Keyboards
 ** Happy Hacking Keyboard

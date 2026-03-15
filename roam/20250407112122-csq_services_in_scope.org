@@ -2,6 +2,7 @@
 :ID:       f7838121-6dd8-4d81-95a6-0086aa43bad5
 :END:
 #+title: CSQ Services in Scope
+#+FILETAGS: :work:reference:
 
 * List of Services
 

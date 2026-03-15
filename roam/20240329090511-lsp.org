@@ -2,6 +2,7 @@
 :ID:       d1df4105-8296-4302-93e3-4fc7185212a7
 :END:
 #+title: lsp
+#+FILETAGS: :personal:tools:
 * Ruby lsp
 #+begin_src shell
 gem install reek

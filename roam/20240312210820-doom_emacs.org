@@ -2,6 +2,7 @@
 :ID:       6701c272-7ae9-418d-86f9-714dd22590e7
 :END:
 #+title: doom emacs
+#+FILETAGS: :personal:tools:
 * Tips
 ** How to export search results in vertico?
 
