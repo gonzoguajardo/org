@@ -1,0 +1,242 @@
+:PROPERTIES:
+:ID:       2f97fe69-c6b7-4704-8d69-94f19c1e9ee9
+:END:
+#+title: System User Deprecation
+* Resources
+
+** `x-forwarded-client-cert` is the cert we want for istio
+** [[https://zendesk.atlassian.net/browse/CSQT-1435][CSQ epic]]
+** [[https://zendeskdev.zendesk.com/hc/en-us/articles/8237516594586-Using-Service-Mesh-to-authenticate-requests][How to configure cicd-toolkit with mtls]]
+** [[https://docs.google.com/document/d/1C13lU6RQFXqKHjx044Gf8j0Io2jWX1NTNkGDguxQ3wc/edit?tab=t.0][WASM Plugin Deprecation]] ADR
+** [[https://docs.google.com/document/d/1QSXVxIEzzmOkHb6Hl5zih-9cueL3ZGMpUIw69wLn03g/edit?tab=t.0][System User Auth Deprecation]]
+** [[https://lucid.app/lucidspark/d1e7e11b-2e8a-41e5-8cf1-e286415c5c9b/edit?invitationId=inv_152c9aac-a8c2-4c1c-86a7-f499b8ef71ad&page=0_0#][Lucid diagram with all the different options]]
+** [[https://cerebro.zende.sk/projects/?search%5Bname_or_nickname_like%5D=&search%5Bproduct_projects.product_id%5D=10&search%5Bcategory%5D=Service&search%5Btaggings.tag_id%5D%5B%5D=&search%5Bdeploy_target%5D=&search%5Bin_scope_for_soc2%5D=&search%5Btfa%5D=&search%5Bruns_on%5D=&search%5Bcriticality_tier%5D=&search%5Brelease_state%5D=GA&search%5Bgroup_by%5D=&commit=Search][Cerebro list of core-services]]
+** [[https://zendesk.datadoghq.com/notebook/11462536/doorman-system-user-auth?view=view-mode][dashboard for system user requests]]
+** [[https://zendesk.datadoghq.com/dashboard/3m5-7xm-8rh/istio-service-dashboard?fromUser=false&refresh_mode=sliding&tpl_var_project%5B0%5D=account-fraud-service-afs&from_ts=1741265002921&to_ts=1741869802921&live=true][dashboard for service mesh clients]]
+** [[https://zendesk.datadoghq.com/dashboard/skc-iua-b24/istio-outbound-traffic-dashboard?fromUser=true&refresh_mode=sliding&tpl_var_namespace%5B0%5D=account-fraud-service-afs&from_ts=1741265215036&to_ts=1741870015036&live=true][dashboard for outbound traffic]]
+** [[https://zendesk.slack.com/archives/C5CQK1W2F/p1724726230804439?thread_ts=1724722701.019739&cid=C5CQK1W2F][Changes need for jobs to use service mesh]]
+
+* WASM Plugin
+** [[https://github.com/zendesk/doorman-auth-wasm-plugin][Repo readme + diagram]]
+** [[https://github.com/zendesk/doorman-auth-wasm-plugin/blob/main/cicd-toolkit/kubernetes/roles/wasmplugin.jsonnet#L16-L36][Services still using WASM plugin]]
+* Merged in PRs
+** [[https://github.com/zendesk/cicd-toolkit/pull/3336/files][Add DoormanFilter to cicd-toolkit]]
+** gRPC endpoint in doorman for envoyfilter
+[[https://github.com/zendesk/doorman_scala/pull/1981][PR]]
+** support for mtls -> system user auth in doorman
+[[https://github.com/zendesk/doorman_scala/pull/2160#event-17160315545][PR]]
+
+* Calls
+#+begin_src
+KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY) KRAGLE_OAUTH_SECRET
+=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH) bundle exec kurl staff-service/api/services/staff -H 'X-Zendesk-Original-Ho
+st: gonzo-1.dev-gonzo-guajardo.usw2.scooter.zendesk-dev.com'
+#+end_src
+** Determining the system user name based on credentials
+
+#+begin_src
+
+export gonzo_KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_MAC_SAMPLE_DATA_SERVICE)
+export gonzo_KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_SAMPLE_DATA_SERVICE_OAUTH)
+export gonzo_host="billing.zendesk-staging.com"
+KRAGLE_OAUTH_KEY=$gonzo_KRAGLE_OAUTH_KEY KRAGLE_OAUTH_SECRET=$gonzo_KRAGLE_OAUTH_SECRET bundle exec kurl "https://$gonzo_host/doorman/v1/auth.json" -H "X-Zendesk-Original-Host: $gonzo_host"
+#+end_src
+
+export gonzo_host="sample-data-service.sample-data-service"
+export gonzo_host2="gonzo-2025-02-19.zendesk-staging.com"
+export gonzo_host=gonzo-1.dev-gonzo-guajardo.usw2.scooter.zendesk-dev.com
+
+# billing user
+export gonzo_KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY)
+export gonzo_KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH)
+# monitor zendesk user
+export gonzo_KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY)
+export gonzo_KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_ZENDESK_OAUTH)
+# monitor monitor user
+export gonzo_KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_MAC_MONITOR)
+export gonzo_KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MONITOR_OAUTH)
+
+# export gonzo_host2="gonzo-2025-02-19.zendesk-staging.com"
+
+export gonzo_KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY)
+export gonzo_KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH)
+export gonzo_host="sample-data-service.sample-data-service"
+export gonzo_host2="gonzo-2025-03-18.zendesk-staging.com"
+curl -X DELETE "http://$gonzo_host/api/services/sample-data/delete" -H "X-Zendesk-Original-Host: $gonzo_host2"
+KRAGLE_OAUTH_KEY=$gonzo_KRAGLE_OAUTH_KEY KRAGLE_OAUTH_SECRET=$gonzo_KRAGLE_OAUTH_SECRET bundle exec kurl -X DELETE "http://$gonzo_host/api/services/sample-data/delete" -H "X-Zendesk-Original-Host: $gonzo_host"
+** Making a call with monitor user
+#+begin_src
+
+export gonzo_KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_MAC_MONITOR)
+export gonzo_KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MONITOR_OAUTH)
+export gonzo_host="account-fraud-service.account-fraud-service-afs.svc.cluster.local"
+export gonzo_host2="gonzo-2025-03-18.zendesk-staging.com"
+KRAGLE_OAUTH_KEY=$gonzo_KRALE_OAUTH_KEY KRAGLE_OAUTH_SECRET=$gonzo_KRAGLE_OAUTH_SECRET bundle exec kurl -X DELETE "http://$gonzo_host/api/services/fraud/signal/billing/auth" -H "X-Zendesk-Original-Host: $gonzo_host2"
+#+end_src
+** Testing if I can use service-mesh with endpoint
+
+curl http://sample-data-service.sample-data-service/z/ping -v
+
+export gonzo_KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY)
+export gonzo_KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH)
+export gonzo_host="billing.zendesk-staging.com"
+KRAGLE_OAUTH_KEY=$gonzo_KRAGLE_OAUTH_KEY KRAGLE_OAUTH_SECRET=$gonzo_KRAGLE_OAUTH_SECRET kurl http://subscription-data-service.subscription-data-service/z/ping -H "X-Zendesk-Original-Host: $gonzo_host" -v
+** Confirming request is using mtls auth:
+confirm by looking at DD [[https://zendesk.datadoghq.com/metric/explorer?fromUser=true&state=H4sIAAAAAAAAE12R0WrDMAxF_0WPw5QkS9vNvzKKMbGcChw7tZxCGvLvQ0nbwd6ky_HVlbzAHTNTiqChqZrW1LWpalDQZzteGfTPAg49RSobtEChEhA0gNpLw_SQvj69FRuoF8OAvog4jwIUGpAxEzIoyHibkMs-ICOPKTIan_Jgy3_2Nu2VoNEO4iXSLDGdLdZwmnIn8oAlU_d6M4MGe-81z1xwOHTjdJgY8_KxwnpRIMOmYHffZ_NnvV7WyyoYj4GKcTRglDsJ_la7FD31m0GggQroulLAKRe5VMoOM2hwyB1sXrKWz9sKC3CxwtXntj5_H78-2-Z4VoDRbVrTVtXpqWX0GflqhuRkSw7kKPagYLQTowPtbWBcFXgKBfMz4juyudPDvD4hjYG4wPoLk_KL6vkBAAA&start=1741795834257&end=1742400634257&paused=false#N4Ig7glgJg5gpgFxALlAGwIYE8D2BXJVEADxQEYAaELcqyKBAC1pEbghkcLIF8qo4AMwgA7CAgg4RKUAiwAHOChASAtnADOcAE4RNIKtrgBHPJoQaUAbVCCc21XkyXkNkHYdOMy0zqxkQHgBdKl9dfVdQEQx1HzNtfwMQKAwEDAB9DXxtAGMlZBB1BF0cy1D4mgKNPFVkCA0JHAA6dQ1GJqNfBqac-BEEYF6RETgcxpFM0bxdOXT5HDQIHKxkRwQ8DDR0hDQNCgACAQbRVMkJ+W0cACtRhGQNGPk0OABaFLSXrW0ANyW4A6y0zy6TA9gA1mgcBgoOloq15Bg8vdHs83qkMJ8dL88jwmhgNOlenh+gAKACUgRCICMGnmIi06Q8qlSyjUmh0ejKIAaWGeMhACOeCAQ+WSOBghOcGiWSUWI22ClFWUWUFlojgIOgTGUInszLQgX49Se2AVimUcqUwR4fG5T3EAGEpMIYCgRE40DwgA][metrics]]
+** Request with billing credentials
+
+KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY) KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH) bundle exec kurl -X POST 'https://gonzo-2025-02-19.zendesk-staging.com/api/services/experiments/account/experiments/hello-world/participation' --pretty
+
+KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY) KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH) bundle exec kurl -X POST 'https://gonzo-2025-02-19.zendesk-staging.com/api/services/experiments/account/experiments/hello-world/participation' -H "X-Zendesk-Original-Host: gonzo-2025-02-19.zendesk-staging.com" --pretty
+
+KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY) KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH) bundle exec kurl -X POST 'experimentation-service.experimentation-service/api/services/experiments/account/experiments/hello-world/participation' -H "X-Zendesk-Original-Host: gonzo-2025-02-19.zendesk-staging.com" --pretty
+
+* Outstanding Questions
+** What is the status of ultimate on the service mesh?
+** What is the status of klausapp on the service mesh?
+** What is the status of workato on the service mesh?
+** 
+** for internal services that have fully adopted mTLS, and don't need a doorman context, should they be creating a =RequestAuthentication= still? don't think there would be an additional header to validate.
+** What is the status of our jenkins runners on the mesh?
+** further enhancements to fully deprecate system user auth. Doorman jwt with istio forwarded-client-cert? or try and get services passing context?
+* Supporting both types of authentication with ruby
+
+classic example:
+https://github.com/zendesk/zendesk/blob/25195486d8394f26810d14e691ca916f1af0b691/app/controllers/api/v2beta/base_controller.rb#L62-L78
+* Milestones
+** Update all zendesk authentication packages or starter-kits/frameworks to support both types of authentication.
+We will use the existing code to validate doorman system user auth but will fall back to istio service mesh auth validating that the request has a =X-Forwarded-Client-Cert= header.
+*** ruby - doorman-ruby
+** For each individual service - assuming they are already onboared to the service mesh
+*** If they support api with system user authentication, update app (hopefully just updating a package/library) to support both system user auth and istio service mesh auth.
+*** If they are a doorman client calling another service using system user auth, check to see if that service has already done the above step. If so, disable system user auth and verify behavior.
+*** If they support api with system user auth, wait for all clients to onboard to service mesh and stop using their doorman system user auth.
+* Conflunece page
+
+
+
+## Overview
+
+## Objective
+
+Process
+
+Continue on with passing authentication header (doorman system user auth) to the gRPC endpoint.
+
+timebox solution for using istio cert for doorman jwt
+
+For each individual service - assuming they are already onboared to the service mesh
+
+Compile a list of all clients that call the service ingress.
+
+Compile a list of downstream services that are called by a service egress.
+
+If the services supports api with system user authentication, determine if they are using account info from current doorman payload. If they are add a doorman EnvoyFilter to add doorman jwt header to requests from the system user authorization header. This will allow clients to use the K8 DNS for calls instead of public nginx routes.
+
+If they are a doorman client calling another down stream service using system user auth, verify calls are being done with K8 DNS and not public nginx routes. Update all client calls to use K8 DNS. Changes on both the service and downstream service will need to change.
+
+Service might have to update istio dependencies if they are blocking blockUnknownServices
+
+Down stream services will have to update Authorization Policies if they have any currently defined
+
+Add PeerAuthentication to enable mtls for the service. This will involve reviewing the clients of a service and making sure they all use K8 DNS or supported proxies. Should be worked on after most clients have verified the step above.
+
+Add Authorization policies for each client based on namespace
+
+Add Authorization policies for each client based on route
+
+Add RequestAuthenticationfor each client based on route to validate new doorman jwt.
+
+Milestones
+
+All services have PeerAuthentication and authorization policies defined for each client
+
+All services that support api with needed doorman context have doorman Envoy filter enabled
+
+All services making client doorman system user requests are using K8 DNS to hit down stream services
+
+All services have RequestAuthentication configured to validate doorman jwt
+
+All services have removed support for doorman system user auth
+
+Timeline
+
+
+
+Resources
+* Datadog agent port/endpoint
+** makesure port is set to nonmtls
+#+begin_src yaml
+spec:
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    "8100":
+      mode: DISABLE
+  selector:
+    matchLabels:
+      project: api-gateway
+      role: data-plane
+#+end_src
+** add authroization policy
+#+begin_src yaml
+spec:
+  action: ALLOW
+  rules:
+  - to:
+    - operation:
+        methods:
+        - GET
+        paths:
+        - /metrics
+        ports:
+        - "8100"
+  - from:
+    - source:
+        namespaces:
+        - zorg
+        - api-gateway
+#+end_src
+* entitlements migration
+- List of requests using ~none~ [[https://zendesk.datadoghq.com/metric/explorer?fromUser=false&graph_layout=split&start=1757437986294&end=1758042786294&paused=false#N4Ig7glgJg5gpgFxALlAGwIYE8D2BXJVEADxQEYAaELcqyKBAC1pEbghkcLIF8qo4AMwgA7CAgg4RKUAiwAHOChASAtnADOcAE4RNIKtrgBHPJoQaUAbVBGN8qVoD6gnNtUZCKiOq279VKY6epbINiAiGOrKQdpYZAYgUJ4YThr42gDGSsgg6gi6mZaBZnHKGniqyBAaEjgAdL6M9UZBtfWZ+CIIwAK1op6SIk5gbgDWaDgYUE6RvvIY2chw3eJocOrdGhQABJ0iInCZdcNamXi6ck4OaBCZWMgiUnA8OwBGWDvA6RfZI+OTaY8eoYDROTp4boACgAlCAeABdKiudx4TChcIo1RojAxUrxeFIkC1LDrGQgBbrBAIHJJHAwcHojR3RK3Q5OOSKco4W5QVmiOAjaBMZRPdwYNDw-g1eSYLAchS0tlKRE8PjE2XiADCUmEMHJ9luCCcUB8K2ZjmsoGeThg2gw8kY1x03N+gtG2gmUz5iKot1U4hQACYACxUdLaQjW7QCbTKPqZeFqoA][metrics]].
+- List of services using `none`:
+  - otel-daemonset
+  - telemetry-pipeline
+  - kube-system
+- List of clients by security policy: [[https://zendesk.datadoghq.com/metric/explorer?fromUser=false&graph_layout=split&start=1758290819161&end=1758895619161&paused=false#N4Ig7glgJg5gpgFxALlAGwIYE8D2BXJVEADxQEYAaELcqyKBAC1pEbghkcLIF8qo4AMwgA7CAgg4RKUAiwAHOChASAtnADOcAE4RNIKtrgBHPJoQaUAbVBGN8qVoD6gnNtUZCKiOq279VKY6epbINiAiGOrKQdpYZAYgUJ4YThr42gDGSsgg6gi6mZaBZnHKGniqyBAaEjgAdL6M9UZBtfWZ+CIIwAK1op6SIk5gbgDWaDgYUE6RvvIY2chw3eJocOrdGgAEAIIAcgAi2wAUDlDI5wCcVwAcAJTbGCJQ250iInCZdcNamXi6OROBxoCCZLDIVQEPAYNBOBBoDQ8bYAIyw22A70+3yGaS+APEWGBOFB4J49QwGicnTw3RO9xAfFAcxyIFiWAATIlkghUukAdllPlCsU2aUaLkKlUanVGppmq0zO0ad1euYBj8RuNJtNZlFNAslisJAiNsadgdjmccBdrndHs9Xlivpq-gSgSCwRCRFI4Mi0RjnTipHj-oCiZ6yRSqSqEPTGQBdKiudx4TChcK1LDrGQgBbrBAIVkwIwrRnJtxQzAxcUJJkgLM5oj5xBF5RGKDlkApqsYGs6TmJqiNnKgFuF1lQHAwanpjRgxKgz7whSs9KgztUJdwEbQJjKH3uWFdqA1eSYIlyRTKFEYbSWHgJnh8Bvn8QAYSkwhgufsoIQTinps86ONYoC+k4JYYPIjDAjo5QZNkWraBMUwzCy9iLEoj5bj44goByAAsw5uIQ4HaAI2jKH0mSJJ0qjyAQo4gBgMAlnAMCDFI5SVIkwoLrkMqSHKGgKiYSoIB0XRIM+z5AA][metric]]
+- List of clients by request status: [[https://zendesk.datadoghq.com/metric/explorer?fromUser=false&graph_layout=split&start=1758290819161&end=1758895619161&paused=false#N4Ig7glgJg5gpgFxALlAGwIYE8D2BXJVEADxQEYAaELcqyKBAC1pEbghkcLIF8qo4AMwgA7CAgg4RKUAiwAHOChASAtnADOcAE4RNIKtrgBHPJoQaUAbVBGN8qVoD6gnNtUZCKiOq279VKY6epbINiAiGOrKQdpYZAYgUJ4YThr42gDGSsgg6gi6mZaBZnHKGniqyBAaEjgAdL6M9UZBtfWZ+CIIwAK1op6SIk5gbgDWaDgYUE6RvvIY2chw3eJocOrdGgAEAIIAcgAi2wAUDlDI5wCcVwAcAJTbGCJQ250iInCZdcNamXi6OROBxoCCZLDIVQEPAYNBOBBoDQ8bYAIyw22A70+3yGaS+APEWGBOFB4J49QwGicnTw3RO9xAfFAcxyIFiWAATIlkghUukAdllPlCsU2aUaLkKlUanVGppmq0zO0ad1euYBj8RuNJtNZlFNAslisJAiNsadgdjmccBdrndHs9Xlivpq-gSgSCwRCRFI4Mi0RjnTipHj-oCiZ6yRSqSqEPTGQBdKiudx4TChcK1LDrGQgBbrBAIVkwIwrRnJtxQzAxcUJJkgLM5oj5xBF5RGKDlkApqsYGs6TmJqiNnKgFuF1lQHAwanpjRgxKgz7whSs9KgztUJdwEbQJjKH3uWFdqA1eSYIlyRTKFEYbSWHgJnh8Bvn8QAYSkwhgufsoIQTinps86ONYoC+k4JYYPIjDAjo5QZNkWraBMUwzCy9iLEoj5bj44goByAAsw5uIQ4HaAI2jKH0mSJJ0qjyAQo4gBgMAlnAMCDFI5SVIkwoLrkMqSHKGgKiYSoIB0XRIM+z5AA][metric]]
+
+* staff-service migration
+- List of requests using ~none~ [[https://zendesk.datadoghq.com/metric/explorer?fromUser=false&graph_layout=split&start=1757437986294&end=1758042786294&paused=false#N4Ig7glgJg5gpgFxALlAGwIYE8D2BXJVEADxQEYAaELcqyKBAC1pEbghkcLIF8qo4AMwgA7CAgg4RKUAiwAHOChASAtnADOcAE4RNIKtrgBHPJoQaUAbVBGN8qVoD6gnNtUZCKiOq279VKY6epbINiAiGOrKQdpYZAYgUJ4YThr42gDGSsgg6gi6mZaBZnHKGniqyBAaEjgAdL6M9UZBtfWZ+CIIwAK1op6SIk5gbgDWaDgYUE6RvvIY2chw3eJocOrdGhQABJ0iInCZdcNamXi6ck4OaBCZWMgiUnA8OwBGWDvA6RfZI+OTaY8eoYDROTp4boACgAlCAeABdKiudx4TChcIo1RojAxUrxeFIkC1LDrGQgBbrBAIHJJHAwcHojR3RK3Q5OOSKco4W5QVmiOAjaBMZRPdwYNDw-g1eSYLAchS0tlKRE8PjE2XiADCUmEMHJ9luCCcUB8K2ZjmsoGeThg2gw8kY1x03N+gtG2gmUz5iKot1U4hQACYACxUdLaQjW7QCbTKPqZeFqoA][metrics]].
+- [[https://zendesk.datadoghq.com/metric/explorer?fromUser=false&graph_layout=split&start=1758115314235&end=1758720114235&paused=false#N4Ig7glgJg5gpgFxALlAGwIYE8D2BXJVEADxQEYAaELcqyKBAC1pEbghkcLIF8qo4AMwgA7CAgg4RKUAiwAHOChASAtnADOcAE4RNIKtrgBHPJoQaUAbVBGN8qVoD6gnNtUZCKiOq279VKY6epbINiAiGOrKQdpYZAYgUJ4YThr42gDGSsgg6gi6mZaBZnHKGniqyBAaEjgAdL6M9UZBtfWZ+CIIwAK1op6SIk5gbgDWaDgYUE6RvvIY2ci1GIKCALR+AG4Q2QAEAIIAcgAiewAUDlDIVwCctwAce257Vzc4UPe3AJR7GCJQPYiHAIPadEQiOCZOrDLSZPC6OROBxoXZYZB4ERjYFgEQ8PYAIywe2A4Mh0KGaShCPEWGROFRmSwPHqGA0Tk6mIQ52+IB4AF0qK53HhMKFwsLVKKMDFSvE+YKQLUsGgcqAFqqEAgckkcDAOWKNLtEqjIU45IpygzoCbRHARtAmMpge4MGg+fwavJMHSLTqCRhtJYBTw+ErveIAMJSYQwGTh1EIJxQHxwERGxzWUBSe0wbQYeSMZE6ZR2Bzp+2dAQKqio1TiFAAJgALFR0tpCNntAJtMo+pk+aGgA][split by response code]]
+
+* account-service migration
+- List of requests using ~none~ [[https://zendesk.datadoghq.com/metric/explorer?fromUser=false&graph_layout=split&start=1755620922028&end=1758299322028&paused=false#N4Ig7glgJg5gpgFxALlAGwIYE8D2BXJVEADxQEYAaELcqyKBAC1pEbghkcLIF8qo4AMwgA7CAgg4RKUAiwAHOChASAtnADOcAE4RNIKtrgBHPJoQaUAbVBGN8qVoD6gnNtUZCKiOq279VKY6epbINiAiGOrKQdpYZAYgUJ4YThr42gDGSsgg6gi6mZaBZnHKGniqyBAaEjgAdL6M9UZBtfWZ+CIIwAK1op6SIk5gbgDWaDgYUE6RvvIY2ciLnXjdALR+AG4Q2RQABJ0iInCZdcNamXi6ck4OaLtYyCJScPsUAIRHJ2dDaafXcRYO44B6ZJ5rMYvMAiHj7ABGWH2wHS12yI3Gk2mPHqGA0TlW3QAFABKEA8AC6VFc7jwmFC4RpqjpGBipXi5KpIFqWDQOVACz5CAQOSSOBgBPpGl2iQeJycckU5VB0FlojgI2gTGUL3cGDQ5P4NXkmGBitFcqUlJ4fG5JvEAGEpMIYDI7Q8EE4oD44CJpY5rKBXk4YNoMPJGHcdMq0Rr5NocAArU5ISlUB6qcQoABMABYqOltIQg9oBNplH1MuSbUA][metrics]].
+- Billing workloads using none [[https://zendesk.datadoghq.com/metric/explorer?fromUser=false&graph_layout=split&start=1758221801543&end=1758308201543&paused=false#N4Ig7glgJg5gpgFxALlAGwIYE8D2BXJVEADxQEYAaELcqyKBAC1pEbghkcLIF8qo4AMwgA7CAgg4RKUAiwAHOChASAtnADOcAE4RNIKtrgBHPJoQaUAbVBGN8qVoD6gnNtUZCKiOq279VKY6epbINiAiGOrKQdpYZAYgUJ4YThr42gDGSsgg6gi6mZaBZnHKGniqyBAaEjgAdL6M9UZBtfWZ+CIIwAK1op6SIk5gbgDWaDgYUE6RvvIY2ciLnXjdALR+AG4Q2QAEAIIAcgAie0cA8gAqe50iInCZdcNamXi6ck4OaLtYyGtjEQ4MAiQ6nPbpd7ZEbjSbTWZRTQLJYAIwgaB+IhgYLOAApIVk4DDtBMplBkGiMaIYOt5NocFA8E91pkUpMaaJxOsAFY4FF7NwQjLQ0YkuHkymYmnaRaPDDadZ4DQYeDrIESYSs54aFmOSo6AXaIVQomi0nTCnoqXrGXZVkKlZdBCbHQ7bJqnAa3aDKS6kQVdRGwUEkWwsmWqlYm2y+3rHBbHQquCK5Wqu4Bg0ASh4exRWD2wAcUB49QwGicq26uMzIB4AF0qK53HhMKFwk3VC2MDFSvFaw2QLUsGgcqAFiOEAgckkcDAK62NLtEpiiXJFOUcD8oMvRKboExlED3Bg0LX+DV5JgsE419OV-2eHxB5fxABhKTCGAyZ8-BBOKA+HA-pDG2oBSESMAyvIjBfDoyh3A8TxDGkjzvOI17fL8-ZUD8qjiCgABMAAsVDpNohBgdoAjaMofSZLWj5AA][metrics]].
+** Making calls to account service ping
+
+#+begin_src bash
+curl http://account-service.account-service.svc.cluster.local/z/ping -v -H 'X-Zendesk-Original-Host: accounts.zendesk-staging.com'
+#+end_src
+* auth-service Migration
+- List of requests using ~none~ [[https://zendesk.datadoghq.com/metric/explorer?graph_layout=split&start=1768920102805&end=1770129702805&paused=false#N4Ig7glgJg5gpgFxALlAGwIYE8D2BXJVEADxQEYAaELcqyKBAC1pEbghkcLIF8qo4AMwgA7CAgg4RKUAiwAHOChASAtnADOcAE4RNIKtrgBHPJoQaUAbVBGN8qVoD6gnNtUZCKiOq279VKY6epbINiAiGOrKQdpYZAYgUJ4YThr42gDGSsgg6gi6mZaBZnHKGniqyBAaEjgAdL6M9UZBtfWZ+CIIwAK1op6SIk5gbgDWaDgYUE6RvvIY2chQOG4eIgAEFBudIiJwmXXDWpl4unJODmgQmVjIIlJwWwCEu-uHQ2kHZ+JYlzjXW7IPAiMYPMAiHgbABGWA2wHSZ2yI3Gk2mPHqGA0Tk6IIQAAoAJQgHgAXSornceEwoXClNU1IwMVK8RJ5JAtSwaByoAW3IQCBySRwMBxNI0N0S132TjkinKAOgUtEcBG0CYyge7gwaBJ-Bq8kwfzlQulSjJPD4HMN4gAwlJhDAZNbrggnFAfHARBLHNZQI8nDBtBh5IxLjoFUjVfJtDgAFYHJBkqjXVTiFAAJgALFR0tpCP7tAJtMo+pkSZagA][metrics]].
+
+
+
+  
+
+* All services
+- [[https://zendesk.datadoghq.com/metric/explorer?fromUser=false&graph_layout=split&start=1758634604561&end=1759239404561&paused=false#N4Ig7glgJg5gpgFxALlAGwIYE8D2BXJVEADxQEYAaELcqyKBAC1pEbghkcLIF8qo4AMwgA7CAgg4RKUAiwAHOChASAtnADOcAE4RNIKtrgBHPJoQaUAbVBGN8qVoD6gnNtUZCKiOq279VKY6epbINiAiGOrKQdpYZAYgUJ4YThr42gDGSsgg6gi6mZaBZnHKGniqyBAaEjgAdL6M9UZBtfWZ+CIIwAAUArWinpIiTmBuANZoOBhQTpG+8hjZyFIARjPaUKIwALRwxIr+Itm7fgBuENkABG7XAxKRdaPj2lMzcwuaSysHRz5wbrDKRnHSXG53B5DZ5jSbTWbzKLfZZwZAaKLyNBwXbJBAYUHacFwW7ae7maEjWFveGfJH2FHIGDaHBgJj7EQwUTEyHkp6U17vBFfekrdabbYc3ZLERwNAksmDPlSKmC2mLBlrCBoNA7eVQpUvOEfRHqlbLTp4bq7QTaDB4KAEom7DCCDR63nAw3U43Cn6ozXana7UQIOBMz27GCeOBgbDXACU1wAggA5AAi106IhlmRhWkyeF0cicDh1mSwyFUBDwGDQTgQaA0PGuayw12AWZzebgBaLWBLODLWB49QwGicFu6vXjID4oC+MVKWAATIlcal0oXssp8oViiBYjRchUqjU6o1NM1WmZ2pOev0PTCBTSTcjRSINhgtkG-sFAacLiublSX1T0VRfX0GV-XR1CBZ5HSA91FTA58fTpP00QxLEcRSBCIRAx9+SNIV0IZJkWTZQFORlJDHhQ4i1TfVExS-CU9mlWUACpaIpZVUJI01-S1HUOR4g1wLQwTkHNLoEGtW17Tw7EXTdHlkKfBjXxFITA0lEMw1teCo1DWMsETDARCgTMpC7Sl80LcR+1LK4KxEKQ4GbVt207Htu17RyByHEcxwnWTp1nABdKhXHcPBMFCcJaiwLEZBAJYsQQUNlCZOBAVnaK3CrTBFx0eJ8tAJKUqIdLECy3IjCgfKQBioqMBKuJVx4KKQEqnJQBqzKciSHAYAneKNCuRIRLgesFCG9IdUaqhprGaAmGUNz3FrJrtnsTB+zkRRlDWL9LC6ng+B6zFxAAYSkYQYFSvbxCcbZYImxxrFAdynHDeRGBLHRlFAjTvQEpjIuWnxxBQZcABYqHSbRCG+rYgdyAZMkSTpVHkAg+pADAYBy4yRnKSpEl3SbcjPSQLw0K8TBvBAOlk2cLp4IA][metrics]]
+- Way to list out all the istio policies created
+    #+begin_src bash
+    for ns in onboarding-experience-service experimentation-service sample-data-service growth-engine onboarding-panel billing account-fraud-service-afs billing-integration-gateway login-service login-ui-service malware-scanning-service opswat-malware-scanner staff-service entitlements account-service doorman permissions; do
+    echo "Namespace: $ns"
+    kubectl get authorizationpolicy -n $ns
+    echo ""
+    done
+
+    #+end_src
+
+
+- [[https://zendesk.datadoghq.com/metric/explorer?graph_layout=split&start=1759173618644&end=1759778418644&paused=false#N4Ig7glgJg5gpgFxALlAGwIYE8D2BXJVEADxQEYAaELcqyKBAC1pEbghkcLIF8qo4AMwgA7CAgg4RKUAiwAHOChASAtnADOcAE4RNIKtrgBHPJoQaUAbVBGN8qVoD6gnNtUZCKiOq279VKY6epbINiAiGOrKQdpYZAYgUJ4YThr42gDGSsgg6gi6mZaBZnHKGniqyBAaEjgAdL6M9UZBtfWZ+CIIwHYOIs6dAsgATABUPAAEAEZYk72a-YM4Ajz1GBpOnXjdABQAlCB8oJHRubFYI4nJCKnpeFk5eYiFxSAX5ZXVtZKNms2tMztbbdYC7PqOOBbFZwZAAFjGkzckwhAyhQ1hAFYxvsprN5qjlqt1psQQgDkcALpUVzuPCYULhWpYNA5UDyDCshAIJ4wIxwaR8EC01T0jAxUrxI4UUDM1kyEAcrk85RgDDuaXCtyizASnSXKlUOVsxWcxAq3JQHAwLYMjQQTKJNCiKFyRTlHDOqBOl1OehMZQibWczVQGryTBYJxup7TdWWHiUnhC+zOhAAYSkwhgCtT4icYfUA0kA2soCkUL5GHkjCcim0ygc3sTVGdqnEKBGcKNbkI5e0Agbls0jqonVU8gIJowMD5cBgnhLn1UiXyhWUNTqfw0AJMQIQHS6SGTyaAA][metrics]] by response code and color
+  

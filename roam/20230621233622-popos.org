@@ -1,0 +1,29 @@
+:PROPERTIES:
+:ID:       1e36f133-d3e2-47eb-9e7f-14f7b997d8e2
+:END:
+#+title: popos
+
+* PopOS                                                            :os:popos:
+** Fix for popos shop and package manager being whack
+#+begin_src bash
+  sudo apt clean
+  sudo apt update -m
+  sudo dpkg --configure -a
+  sudo apt install -f
+  sudo apt full-upgrade
+  sudo apt autoremove --purge
+#+end_src
+*** File has unexpected size error
+
+Was running into the unexpected size error below and running the =full-upgrade= command seems to have helped.
+
+#+begin_src
+E: Failed to fetch http://apt.pop-os.org/ubuntu/dists/jammy-backports/universe/dep11/Components-amd64.yml.xz  File has unexpected size (12488 != 12460). Mirror sync in progress? [IP: 52.84.125.28 80]
+   Hashes of expected file:
+    - Filesize:12460 [weak]
+    - SHA256:b65f8bf4ab5c68ee8ae5f72b8c4660960d701db3569d19897edf68ae1304e047
+    - SHA1:89c432b1b6fd79f1c249bf50bbfbd55c3aecd979 [weak]
+    - MD5Sum:e1da558efc35d926b44bd6035246592f [weak]
+   Release file created at: Fri, 05 Aug 2022 21:02:51 +0000
+E: Some index files failed to download. They have been ignored, or old ones used instead.
+#+end_src

@@ -1,0 +1,7 @@
+:PROPERTIES:
+:ID:       40e3b0ea-77d3-44cc-8227-1e212dd57ddd
+:END:
+#+title: kinesis-360-keyboard
+* Notes
+** Battery indicator
+Mod + Hotkey4

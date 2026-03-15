@@ -1,0 +1,18 @@
+:PROPERTIES:
+:ID:       fd1b067c-78cc-494e-b6e6-8e062fdc4afc
+:END:
+#+title: Wire Guard
+* WireGuard
+** Adding a Client
+1. Go to unifi console and add a client under the wireguard vpn server. Either download the config or scan with the wireguard mobile app.
+2. If you setting up client via config, download the config.
+3. Move the config to the wireguard directory and rename based on what you want the interface to be called.
+   #+begin_src shell
+sudo mv ~/Downloads/WireGuard-Server-1-Gonzo-s-PopOS-Laptop.conf /etc/wireguard/wg0.conf
+   #+end_src
+** WireGuard commands
+#+begin_src shell
+sudo wg show
+wg-quick up wg0
+wg-quick down wg0
+#+end_src

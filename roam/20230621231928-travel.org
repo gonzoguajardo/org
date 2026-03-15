@@ -1,0 +1,27 @@
+:PROPERTIES:
+:ID:       d04359b8-7e2d-475e-ab96-155e11f31647
+:END:
+#+title: travel
+* Travel List
+** Backpack
+*** laptop
+*** laptop charger
+*** wireless headphones
+*** wireless headphones charger
+*** wired headphones
+*** apple watch charger
+*** Phone charger
+*** External Keyboard
+*** External Mouse
+*** USB C cable - probably from the headphones
+*** Pills
+*** glucometer
+*** water bottle
+** Suitcase
+*** Shorts
+*** tshirts
+*** jeans
+*** nice shirt
+*** Tolietries
+**** toothbrush
+**** beard comb

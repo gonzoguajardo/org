@@ -1,0 +1,6 @@
+:PROPERTIES:
+:ID:       f8a98412-a3d2-4537-bcad-0d62e30395e5
+:END:
+#+title: org roam
+
+To get the graph showing, we utilize [[https://github.com/org-roam/org-roam-ui][org-roam-ui]] and run the =org-roam-ui-open= emacs command.

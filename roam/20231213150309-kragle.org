@@ -1,0 +1,49 @@
+:PROPERTIES:
+:ID:       c3a858c8-864f-453d-9b55-ca807733c82c
+:END:
+#+title: kragle
+
+* Example billing kragle call
+#+begin_src
+KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY) KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH) bundle exec kurl 'http://auth-service.doorman.svc.cluster.local/doorman/v1/auth.json' -H 'X-Zendesk-Original-Host: gonzo-2025-05-22-01.zendesk-staging.com' -H 'X-Zendesk-Original-URI: https://gonzo-2025-05-22-01.zendesk-staging.com/doorman/v1/auth.json' -H 'X-Zendesk-Internal-User: 8683309752829' -H 'x-forwarded-proto: https' --pretty
+
+
+KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY) KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH) bundle exec kurl 'https://gonzo-2025-05-22-01.zendesk-staging.com/api/services/onboarding-experience/task/post_purchase/connect_existing_email.json' -H 'X-Zendesk-Original-Host: gonzo-2025-05-22-01.zendesk-staging.com' -H 'X-Zendesk-Internal-User: 8683309752829' -H 'x-forwarded-proto: https' --pretty
+
+
+KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY) KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH) bundle exec kurl 'http://onboarding-experience-service.onboarding-experience-service.svc.cluster.local/task/post_purchase/connect_existing_email.json' -H 'X-Zendesk-Original-Host: gonzo-2025-05-22-01.zendesk-staging.com' -H 'X-Zendesk-Internal-User: 8683309752829' -H 'x-forwarded-proto: https' --pretty
+
+
+KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY) KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH) kurl 'https://billing.zendesk-staging.com/billing/api/internal/v1/accounts/purchases' -X POST --pretty -d {}
+
+
+KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY) KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH) bundle exec kurl 'https://billing.zendesk-staging.com/billing/api/internal/v1/accounts/21739609/overage_eligibility' --pretty
+
+KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY) KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH) bundle exec kurl 'https://billing.zendesk-staging.com/billing/api/internal/v1/accounts/24264749/smoke_tests/reset' --pretty --method POST --verbose -d '{"reset_to_trial":"true"}'
+
+
+KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY) KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH) bundle exec kurl 'https://z3nab-97b452-ef66ffe8dc05b86b1bea6a910efbd9.zendesk-staging.com/billing/api/internal/v1/accounts/24239919/smoke_tests/reset' --pretty --method POST --verbose -d '{"reset_to_trial":"true"}'
+
+KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY) KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH) bundle exec kurl 'https://billing.zendesk-staging.com/billing/api/internal/v1/orders' --pretty
+
+KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_MAC_MONITOR) KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MONITOR_OAUTH) bundle exec kurl 'https://billing.zendesk.com/billing/internal/health_check?' -H 'X-Zendesk-Original-Host: billing.zendesk.com'
+
+KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_MAC_MONITOR) KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MONITOR_OAUTH) bundle exec kurl 'https://billing.zendesk-staging.com/billing/internal/health_check?' -H 'X-Zendesk-Original-Host: billing.zendesk-staging.com'
+
+
+KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY) KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH) bundle exec kurl 'http://auth-service.doorman.svc.cluster.local/doorman/v1/auth.json' -H 'X-Zendesk-Original-Host: z3n-dinesht-test-account-5-8-3.zendesk-staging.com'
+#+end_src
+* Example SDS Kragle call
+
+** parent-products
+#+begin_src
+KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY) KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH) kurl 'http://subscription-data-service.subscription-data-service/parent-products' --pretty
+#+end_src
+
+** account
+#+begin_src
+KRAGLE_OAUTH_KEY=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_MAC_KEY) KRAGLE_OAUTH_SECRET=$(cat /secrets/ZENDESK_SYSTEM_USER_AUTH_BILLING_OAUTH) kurl 'http://subscription-data-service.subscription-data-service/accounts/19552663' --pretty
+#+end_src
+
+* Searching through doorman logs
+[[https://zendesk.datadoghq.com/logs?query=service%3Adoorman%20env%3Astaging%20%40http.url_details.host%3Abilling.zendesk-staging.com%20%40environment%3Astaging%20%40http.url_details.path%3A%22https%3A%2F%2Fbilling.zendesk-staging.com%3A443%2Fbilling%2Fapi%2Finternal%2Fv1%2Forders%3Faccount_id%3D16397039%26status%3Dfailed%22&agg_m=count&agg_m_source=base&agg_q=%40http.url_details.host%2C%40http.url_details.path&agg_q_source=base%2Cbase&agg_t=count&analyticsOptions=%5B%22bars%22%2C%22dog_classic%22%2Cnull%2Cnull%2C%22value%22%5D&clustering_pattern_field_path=message&cols=log_ClientRequestPath%2Clog_log%2Clog_http.headers.x_zendesk_origin_server%2Clog_http.request%2Clog_upstream.status&event=AwAAAZSkGCiyH6ZSNAAAABhBWlNrR0Y4Y0FBQWJyY3pxRk1uUTlRTHEAAAAkMDE5NGE0MWEtZGM5MS00ZDczLWIzZmItNzA2Yzk5ODVkYmIwAANmyw&fromUser=true&messageDisplay=inline&refresh_mode=sliding&sort=time&sort_m=%2C&sort_m_source=%2C&sort_t=%2C&storage=hot&stream_sort=time%2Cdesc&top_n=100%2C100&top_o=top%2Ctop&viz=stream&x_missing=true%2Ctrue&from_ts=1737916638515&to_ts=1737920238515&live=true][DD link]]

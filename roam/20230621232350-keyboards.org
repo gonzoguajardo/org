@@ -1,0 +1,8 @@
+:PROPERTIES:
+:ID:       8ddac47c-7487-493f-9fa5-98e1e4571401
+:END:
+#+title: keyboards
+
+* Keyboards
+** Happy Hacking Keyboard
+Link to [[https://origin.pfultd.com/downloads/hhkb/manual/P3PC-6641-01EN.pdf][manual]].

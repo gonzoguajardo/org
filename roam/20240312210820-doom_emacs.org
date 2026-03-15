@@ -1,0 +1,31 @@
+:PROPERTIES:
+:ID:       6701c272-7ae9-418d-86f9-714dd22590e7
+:END:
+#+title: doom emacs
+* Tips
+** How to export search results in vertico?
+
+
+#+begin_src
+C-; E
+#+end_src
+*** To update all search results:
+
+1. Start wgrep `C-c C-p`
+2. Make changes
+3. Save wgrep `C-x C-s`
+
+
+
+** How to export search results in ivy
+
+#+begin_src
+C-c C-o
+#+end_src
+
+** If a project is not finding all the files, try and invalidate the cache
+If you've changed ignore settings, you may need to invalidate projectile's cache:
+Run: SPC p I (projectile-invalidate-cache)
+#+begin_src
+SPC p I
+#+end_src

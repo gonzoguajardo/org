@@ -1,0 +1,5 @@
+* Inbox
+** TODO Some example goes here
+:PROPERTIES:
+:CREATED: [2026-03-15 Sun 14:04]
+:END:

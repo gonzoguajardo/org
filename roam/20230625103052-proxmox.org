@@ -1,0 +1,172 @@
+:PROPERTIES:
+:ID:       8f4f83d2-3c51-4401-85a3-67cbb0477f97
+:END:
+#+title: proxmox
+
+* Updating proxmox instance
+
+Let's go on an adventure today and see what I break by updating the proxmox instance. Going to try and write some notes on the way.
+
+I ran the following to update proxmox to the latest 6.x version which is 6.4.1:
+#+begin_src bash
+  apt-get update && apt-get upgrade
+#+end_src
+
+That didn't seem to work. I'm getting the following error and proxmox is listed in the packages.
+
+#+begin_src
+  The following packages have been kept back:
+#+end_src
+
+Trying to run this now:
+
+#+begin_src
+  apt-get dist-upgrade
+#+end_src
+
+Nice!! That looked like it worked and I am now on 6.4-15.
+
+Time to try and update to 7. Following this [[https://pve.proxmox.com/wiki/Upgrade_from_6.x_to_7.0][link]].
+
+It looks like it had the kernel installed but it wasn't used it. It suggested an update so I ran the following to restart the host:
+#+begin_src bash
+  shutdown -r now
+#+end_src
+
+Basically there are 2 files. =/etc/apt/sources.list= and =/etc/apt/sources.list.d/pve-enterprise.list=. For the sources one you want to make sure it says =no-subscription=. In the enterprise list you want to comment out that line, as you don't have a license so you can't install the official version. For clarification, you don't need the =/etc/apt/sources.list.d/pve-enterprise.list= file or the enterprise repositories. The only ones that matter since you are using the free version are the =no-subscription= repositories.
+
+After updating the correct files, I ran the update process again and it warned me that I was trying to update from 6.X to 7.X. I said /yes/ and then it started to update.
+
+And that seems like a wrap. Till next time
+
+* Proxmox VM's
+** Java VM
+#+begin_src
+systemctl status int-caffeine
+systemctl status uat-caffeine
+systemctl status prod-caffeine
+#+end_src
+If updating host check the mount.
+** Graylog
+#+begin_src
+systemctl status graylog-server
+#+end_src
+*** Updating
+To update you need to manually update the yum repo file ~/etc/yum.repos.d/graylog.repo~.
+Then run ~yum clean all~, then the normal ~yum update~ should pick up the new version.
+** nginx-internal
+#+begin_src
+service nginx status
+#+end_src
+
+** pgadmin
+*** Updating pgadmin
+1. SSH into docker host
+2. Pull down the latest docker image with the version.
+ ~docker pull dpage/pgadmin4:version~
+3. Stop the current running container.
+ ~docker stop pgadmin_version~
+4. Run a [[https://confluence.gon.zone/display/SKB/Docker+pgadmin][new container]].
+5. Update the docker restart policy using ~docker update --restart={{no|always}} {{containerId}}~
+6. Do any other cleanup needed like removing older containers and images.
+** Gitlab
+*** Updates
+#+begin_src bash
+  ssh gitlab
+  yum update
+#+end_src
+No need to shutdown gitlab for updates.
+**** Updating Failing
+Sometimes gitlab is so behind that you have to update to the latest minor version for the major version you are on before upgrading the major version. To do this
+run ~yum install gitlab-ee-15.11.1~.
+*** Status
+
+#+begin_src
+gitlab-ctl status
+#+end_src
+** Atlassian
+*** Jira
+#+begin_src
+service jira *
+#+end_src
+**** Upgrading
+List of edited files
+- ~/opt/atlassian/jira/conf/server.xml~
+
+List of cleanup after upgrade
+- Cleanup backups located in ~/opt/atlassian~
+- Cleanup backups located in ~/var/atlassian/application-data~
+*** Bitbucket
+#+begin_src
+service atlbitbucket *
+#+end_src
+**** Upgrading
+List of cleanup after upgrade
+- Cleanup old installs located in ~/opt/atlassian/bitbucket~
+*** Bamboo
+#+begin_src
+./atlassian-bamboo-*/bin/start-bamboo.sh
+#+end_src
+**** Upgrading
+List of edited files
+- ~atlassian-bamboo-*/conf/server.xml~
+- ~atlassian-bamboo-*/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties~
+
+If updating the host as well, you need to update ~JAVA_HOME~ in ~/etc/profile~ as well as bamboo.
+*** Confluence
+#+begin_src
+service conflunce status
+#+end_src
+
+List of edited files
+- ~/opt/atlassian/confluence/conf/server.xml~
+
+Cleanup
+- ~/var/atlassian/application-data~
+- ~/opt/atlassian~
+** rancher-master
+i keep on getting connection errors to the kube cluster even though everything is running ok. i think the api is down or something??
+*** How to update rancher
+** rancher1
+*** Installing Rancher
+
+First picked up the ubuntu 20.04 server iso to use it as the host OS.
+
+I setup the host with 4 cores and 9 Gb of memory.
+
+I installed docker by following the directions in the [[https://docs.docker.com/engine/install/ubuntu/][docker documentation]].
+
+Once I started the container, I found the bootstrap password in the docker logs and used that to login to the rancher UI and create a K8 cluster.
+
+I don't think this is going to work like I want it. I think the easier/right thing might be to utilize RKE2 and use that to install server and agent(worker) nodes. References the [[https://docs.rke2.io/install/quickstart/][RKE2 quickstart documentation]] for directions on how to set this up.
+
+* proxmox startup order
+The ~up~ for all of these is set to 120
+** 1
+- pfsense
+** 2
+** 3
+- Jira
+- rancher-master
+** 4
+- apache
+- gitlab
+** 5
+- gitlab-runner
+*** ip addresses
+- 192.168.1.166 - k8-master
+- 192.168.1.167 - k8-slave1
+- 192.168.1.187 - gitlab
+- 192.168.1.124 - rancher-master
+- 192.168.1.104 - minecraft2
+- 192.168.1.54 - Docker
+
+* Proxmox 2
+** Tasks
+*** TODO Need to check if alienware has a harddrive
+*** What version is the current PVE instance?
+pve 6.1.7
+*** Can we change the hostname of the first instance?
+We can only change the name of a node if the node is empty. For now we have to wait until we get another node in the cluster. I'm not even sure that we can change the name of the node as part of the cluster. There is something in the documentation mentioning
+
+=If your node is in a cluster, where it is not recommended to change its name, adapt /etc/pve/corosync.conf so that the nodes name is changed also there. See https://pve.proxmox.com/pve-docs/chapter-pvecm.html#pvecm_edit_corosync_conf=

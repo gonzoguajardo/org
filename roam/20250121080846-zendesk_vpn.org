@@ -1,0 +1,10 @@
+:PROPERTIES:
+:ID:       17018d31-899e-40a2-b073-35e9708b63b0
+:END:
+#+title: Zendesk VPN
+* Resources
+
+VPN address for Zendesk
+#+begin_src
+sec.zendeskit.com:8443
+#+end_src

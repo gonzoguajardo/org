@@ -1,0 +1,43 @@
+:PROPERTIES:
+:ID:       ba93aebc-bea0-431d-8da7-cb1feb172dd4
+:END:
+#+title: ruby
+* Ruby
+
+** Creating a new ruby application with bundler
+#+begin_src bash
+asdf loacl ruby 3.3.0
+gem install bundler
+touch Gemfile
+#+end_src
+
+Gemfile contents:
+#+begin_src ruby
+source 'https://rubygems.org'
+
+gem 'rubocop'
+#+end_src
+** Creating a new rails application
+* Issues installing ruby 3.2.6
+** Installing ffi
+#+begin_src bash
+export LDFLAGS="-L/opt/homebrew/opt/libffi/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/libffi/include"
+export PKG_CONFIG_PATH="/opt/homebrew/opt/libffi/lib/pkgconfig"
+
+gem install ffi -v 1.15.5 -- --enable-system-libffi
+
+#+end_src
+* Installing ruby-odbc
+
+#+begin_src
+gem install ruby-odbc -- --with-odbc-dir="$(brew --prefix unixodbc)"
+#+end_src
+* Weird issue with bundler and template error
+Getting weird errors like below
+
+#+begin_src
+LoadError: linked to incompatible
+#+end_src
+
+I deleted the local bendor/bundle directory in the project and ran another bundle install and that seemed to have fixed it.

@@ -1,0 +1,45 @@
+:PROPERTIES:
+:ID:       f7838121-6dd8-4d81-95a6-0086aa43bad5
+:END:
+#+title: CSQ Services in Scope
+
+* List of Services
+
+** core-services
+*** account-fraud-service
+*** account-service
+*** admin-center-framework-advanced-encryption
+*** admin-center-framework-deletion-schedules
+*** admin-center-framework-roles
+*** admin-center-framework-security
+*** admin-center-framework-team-management
+*** advanced-encryption-service
+*** audit-log-service
+*** authentication-service (Doorman)
+*** data-deletion-data-pipeline
+*** entitlements-service
+*** fraud-prevention-service
+*** login-ui-service
+*** malware-scanning-service
+*** monitor-mfe-accounts-usage
+*** opswat-malware-scanner
+*** orca-model-serving?
+*** permissions-service
+*** staff-service
+*** zendesk-monitor
+** G&M
+*** billing
+*** billing-integration-gateway
+*** customer-analytics-integration
+*** experimentation-service
+*** growth-smoke-tests
+*** onboarding-panel
+
+
+
+
+
+
+
+* List of libraries
+** doorman-auth-wasm-plugin

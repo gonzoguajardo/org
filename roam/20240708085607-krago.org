@@ -1,0 +1,13 @@
+:PROPERTIES:
+:ID:       8a7bc3c3-abd6-426d-9358-b8f4497c4583
+:END:
+#+title: krago
+* Install locally
+#+begin_src bash
+brew update && brew install --formula zd_krago
+#+end_src
+* Install via docker
+#+begin_src dockerfile
+FROM 713408432298.dkr.ecr.us-west-2.amazonaws.com/prod/zendesk/kragle-go:latest AS krago
+COPY --from=krago /bin/krago /bin/krago
+#+end_src
