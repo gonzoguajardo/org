@@ -3,3 +3,4 @@
 :PROPERTIES:
 :CREATED: [2026-03-15 Sun 14:04]
 :END:
+** TODO jjspace doesn't work with directories in worktreeinclude

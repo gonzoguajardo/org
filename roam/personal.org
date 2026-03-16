@@ -1,0 +1,23 @@
+:PROPERTIES:
+:ID:       15f2f30b-4678-4075-96c0-ac9a90b3b809
+:END:
+#+title: Personal
+#+FILETAGS: :personal:
+
+Central hub for all personal notes.
+
+* Notes
+- [[id:8f4f83d2-3c51-4401-85a3-67cbb0477f97][proxmox]]
+- [[id:fd1b067c-78cc-494e-b6e6-8e062fdc4afc][Wire Guard]]
+- [[id:1e36f133-d3e2-47eb-9e7f-14f7b997d8e2][popos]]
+- [[id:6701c272-7ae9-418d-86f9-714dd22590e7][doom emacs]]
+- [[id:ba93aebc-bea0-431d-8da7-cb1feb172dd4][ruby]]
+- [[id:d1df4105-8296-4302-93e3-4fc7185212a7][lsp]]
+- [[id:f8a98412-a3d2-4537-bcad-0d62e30395e5][org roam]]
+- [[id:8ddac47c-7487-493f-9fa5-98e1e4571401][keyboards]]
+- [[id:40e3b0ea-77d3-44cc-8227-1e212dd57ddd][kinesis-360-keyboard]]
+- [[id:d04359b8-7e2d-475e-ab96-155e11f31647][travel]]
+- [[id:12dd56e1-352a-4758-a5e6-46c5032c5069][christmas]]
+
+* Todo
+- [[id:b6af2cf6-f936-4964-8d67-7e37c59303df][Personal Todo]]

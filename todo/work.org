@@ -1,3 +1,6 @@
+:PROPERTIES:
+:ID:       b4f4ea69-ca0a-45a8-8846-5125cc317b86
+:END:
 #+title: Work Todo
 #+FILETAGS: :work:
 

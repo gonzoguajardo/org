@@ -1,0 +1,17 @@
+:PROPERTIES:
+:ID:       ffcdb2e4-63af-4a89-8f81-7c3e186ce3cc
+:END:
+#+title: Work
+#+FILETAGS: :work:
+
+Central hub for all work-related notes.
+
+* Notes
+- [[id:2f97fe69-c6b7-4704-8d69-94f19c1e9ee9][System User Deprecation]]
+- [[id:f7838121-6dd8-4d81-95a6-0086aa43bad5][CSQ Services in Scope]]
+- [[id:c3a858c8-864f-453d-9b55-ca807733c82c][kragle]]
+- [[id:8a7bc3c3-abd6-426d-9358-b8f4497c4583][krago]]
+- [[id:17018d31-899e-40a2-b073-35e9708b63b0][Zendesk VPN]]
+
+* Todo
+- [[id:b4f4ea69-ca0a-45a8-8846-5125cc317b86][Work Todo]]

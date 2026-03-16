@@ -1,0 +1,6 @@
+* Inbox
+** [ ] Need to fix capture tempalters
+
+
+[[file:~/workspace/projects/meal-ui.feature-delete-recipe/app]]
+** [ ] jjspace doesn't work with directories in worktreeinclude

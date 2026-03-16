@@ -1,3 +1,6 @@
+:PROPERTIES:
+:ID:       b6af2cf6-f936-4964-8d67-7e37c59303df
+:END:
 #+title: Personal Todo
 #+FILETAGS: :personal:
 
