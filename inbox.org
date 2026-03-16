@@ -1,5 +1,6 @@
 * Inbox
-** TODO Some example goes here
+
+** TODO some inbox task
 :PROPERTIES:
-:CREATED: [2026-03-15 Sun 14:04]
+:CREATED: [2026-03-16 Mon 01:19]
 :END:

@@ -5,5 +5,8 @@
 #+FILETAGS: :work:
 #+CATEGORY: work
 
-* TODO [/]
-** TODO Example task
+* Tasks
+** TODO some work task :work:
+:PROPERTIES:
+:CREATED: [2026-03-16 Mon 01:19]
+:END:
