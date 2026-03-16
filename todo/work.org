@@ -3,6 +3,7 @@
 :END:
 #+title: Work Todo
 #+FILETAGS: :work:
+#+CATEGORY: work
 
 * TODO [/]
 ** TODO Example task

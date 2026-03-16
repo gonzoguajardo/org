@@ -3,6 +3,7 @@
 :END:
 #+title: Personal Todo
 #+FILETAGS: :personal:
+#+CATEGORY: personal
 
 * TODO [/]
 ** TODO Example task

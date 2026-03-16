@@ -1,0 +1,14 @@
+:PROPERTIES:
+:ID:       97614b34-3d2d-4ff1-9b01-b150de476c1e
+:END:
+#+title: jjspace
+#+FILETAGS: :agenda: :personal:
+#+CATEGORY: jjspace
+
+A terminal dashboard for [[https://github.com/martinvonz/jj][Jujutsu (jj)]] workspaces.
+
+Source: [[https://github.com/gargonzobean/jjspace][github.com/gargonzobean/jjspace]]
+Local: ~/workspace/projects/jjspace
+
+* Tasks
+** TODO doesn't work with directories in worktreeinclude
